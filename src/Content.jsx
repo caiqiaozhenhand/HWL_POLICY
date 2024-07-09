@@ -38,9 +38,8 @@ function App() {
 
   useEffect(() => {
     // 路由改变，更新title
-    if (pathname.startsWith('/detail')) {
-      setTitle('title.detailpage')
-    }
+    if (pathname.startsWith('/detail')) setTitle('title.detailpage')
+    else if (pathname==='/') setTitle('title.corporate.policy')
   }, [pathname])
 
   /**语言切换

@@ -33,9 +33,10 @@ const DetailPage = (props) => {
 
   const [form] = Form.useForm();
   const [trainForm] = Form.useForm();
-  const [editing, setEditing] = useState(false); //基本信息、制度内容
-  const [trainEdit, setTrainEdit] = useState(false);//培训信息
+  const [editing, setEditing] = useState(false); //基本信息、制度内容是否可以编辑
+  const [trainEdit, setTrainEdit] = useState(false);//培训信息是否可以编辑
   const [tableData, setTableData] = useState([]);//培训完成情况data
+  const [isAuth, setIsAuth] = useState(false);//是否拥有编辑权限
 
   /**
    * 培训信息查询接口
@@ -54,7 +55,10 @@ const DetailPage = (props) => {
   }
 
   useEffect(() => {
-    handleQuery()
+    handleQuery();
+    //在此判断用户是否为jimmyl@hutch-med.com,是则可以编辑
+    // if(userName==='jimmyl@hutch-med.com')
+    // setIsAuth(true)
   }, [])
 
   /**
@@ -235,13 +239,10 @@ const DetailPage = (props) => {
         form={form}
         labelAlign='left'
         labelCol={{
-          span: 7,
+          span: 4,
         }}
         wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
+          span: 12,
         }}
         onFinish={onFinish}
         autoComplete="off"
@@ -256,7 +257,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.fileName}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.description', defaultMessage: '描述' })}
@@ -268,7 +271,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.description}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.department', defaultMessage: '发布部门' })}
@@ -280,7 +285,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.department}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'detail.title.contact', defaultMessage: '联系人' })}
@@ -292,7 +299,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.contact}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'detail.title.range', defaultMessage: '适用范围' })}
@@ -304,7 +313,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.range}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.fileNo', defaultMessage: '文件编号' })}
@@ -316,7 +327,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.fileNo}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.type', defaultMessage: '文件类型' })}
@@ -328,7 +341,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.type}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.language', defaultMessage: '语言' })}
@@ -340,7 +355,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.language}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.version', defaultMessage: '版本号' })}
@@ -352,7 +369,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.version}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'detail.title.changeTime', defaultMessage: '修订时间' })}
@@ -364,7 +383,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.date}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'detail.title.content', defaultMessage: '修订内容' })}
@@ -376,7 +397,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.content}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'list.title.source', defaultMessage: '来源' })}
@@ -388,7 +411,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <span>{record.source}</span>
+          )}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({ id: 'detail.title.file', defaultMessage: '文档' })}
@@ -400,7 +425,9 @@ const DetailPage = (props) => {
             },
           ]}
         >
-          <Input disabled={!editing} />
+          {editing ? (<Input />) : (
+            <a onClick={() => window.open(record.fileUrl)}>{record.fileUrl}</a>
+          )}
         </Form.Item>
       </Form>,
     },
@@ -430,13 +457,10 @@ const DetailPage = (props) => {
           form={trainForm}
           labelAlign='left'
           labelCol={{
-            span: 7
+            span: 4
           }}
           wrapperCol={{
-            span: 16,
-          }}
-          style={{
-            maxWidth: 600,
+            span: 12,
           }}
           autoComplete="off"
         >
@@ -450,7 +474,9 @@ const DetailPage = (props) => {
               },
             ]}
           >
-            <Input disabled={!trainEdit} />
+            {trainEdit ? (<Input />) : (
+              <span>{trainForm.getFieldValue('platform')}</span>
+            )}
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({ id: 'detail.title.class', defaultMessage: '培训课程名称' })}
@@ -462,7 +488,9 @@ const DetailPage = (props) => {
               },
             ]}
           >
-            <Input disabled={!trainEdit} />
+            {trainEdit ? (<Input />) : (
+              <span>{trainForm.getFieldValue('trainName')}</span>
+            )}
           </Form.Item>
           {trainEdit && <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
             {intl.formatMessage({ id: 'detail.operation.add', defaultMessage: '新增' })}

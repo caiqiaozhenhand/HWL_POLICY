@@ -33,7 +33,7 @@ let data = [
     level3: '',
     contact: 'cqz',
     range: 'all',
-    fileUrl: 'www.baidu.com'
+    fileUrl: 'https://ant.design/components/table-cn#components-table-demo-expand'
   },
   {
     key: '2',
@@ -218,7 +218,7 @@ const traninData = [
   {
     key: '1',
     trainName: '名称1',
-    trainUrl: 'url',
+    platform: '平台1',
     content: [
       {
         key: '1',
@@ -237,7 +237,7 @@ const traninData = [
   {
     key: '2',
     trainName: '名称2',
-    trainUrl: '2222',
+    platform: '平台2',
     content: [
       {
         key: '1',
