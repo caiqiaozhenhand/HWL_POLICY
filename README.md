@@ -16,10 +16,11 @@ Currently, two official plugins are available:
 
 v20.10.0
 
-# 项目运行
+### 项目运行
 
-pnpm run dev
+- pnpm run dev
+- express 服务启动：新开一个终端切换至 src 目录下，执行 node server.js
 
-# 打包
+### 打包
 
 pnpm build
