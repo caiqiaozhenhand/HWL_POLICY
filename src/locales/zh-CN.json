@@ -15,6 +15,10 @@
   "list.content.detail": "查看详情",
 
   "common.page.total": "共{total}条",
+  "common.btn.back": "返回",
+  "common.btn.edit": "编辑",
+  "common.btn.cancel": "取消",
+  "common.btn.save": "保存",
 
   "menu.corporate.policy": "集团政策",
   "menu.functional.policy": "职能政策",
@@ -64,5 +68,31 @@
   "menu.SZ.quality": "苏州工厂质量",
   "menu.SZ.finance": "苏州工厂财务",
   "menu.SZ.HR": "苏州工厂人力资源管理",
-  "menu.Beijing": "北京办"
+  "menu.Beijing": "北京办",
+
+  "select.option.SH": "和记黄埔医药（上海）有限公司",
+  "select.option.SZ": "和记黄埔医药（苏州） 有限公司",
+  "select.option.GY": "国药控股和记黄埔医药（上海）有限公司",
+  "select.option.BJP": "和黄健宝保健品有限公司",
+  "select.option.SHHH": "上海和黄药业有限公司",
+  "select.option.HK": "HUTCHMED (Hong Kong) Limited",
+  "select.option.International": "HUTCHMED International Corporation",
+  "select.option.US": "HUTCHMED US Corporation",
+  "select.option.BV": "HUTCHMED Europe B.V.",
+
+  "warn.please.select": "请勾选",
+  "warn.please.input": "请输入搜索关键词",
+
+  "detail.title.basic": "基本信息",
+  "detail.title.train": "培训信息",
+  "detail.title.contact": "联系人",
+  "detail.title.range": "适用范围",
+  "detail.title.changeTime": "修订时间",
+  "detail.title.content": "修订内容",
+  "detail.title.file": "文档",
+  "detail.title.platform": "培训平台",
+  "detail.title.class": "培训课程名称",
+  "detail.title.percent": "完成%",
+  "detail.title.finishDate": "完全情况记录日期",
+  "detail.title.predictDate": "预计完成日期"
 }

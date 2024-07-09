@@ -1,9 +1,9 @@
 /*
- * @Descripttion: 列表页
+ * @Descripttion: Content
  * @Author: qiaozhen.cai
  * @Date: 2024-07-04 14:00:28
  */
-import { useState ,useEffect } from 'react'
+import { useState  } from 'react'
 import {   Modal,Layout,Flex, Button } from 'antd'
 import {  Route, Switch,useLocation } from 'react-router-dom';
 import './App.css';

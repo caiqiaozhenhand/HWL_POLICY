@@ -1,5 +1,5 @@
 /*
- * @Descripttion: 列表页
+ * @Descripttion: 入口文件
  * @Author: qiaozhen.cai
  * @Date: 2024-07-04 14:00:28
  */
@@ -18,7 +18,6 @@ const intl = getIntl(locale);
   return (
     <Router>
       <ConfigProvider
-      // locale={locales[locale]}
         theme={{
           components: {
             Menu: {

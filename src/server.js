@@ -31,7 +31,6 @@ let data = [
     level2: '11',
     level3: '',
     use:'',
-    elseName:'',
     fileUrl:'www.baidu.com'
   },
   {

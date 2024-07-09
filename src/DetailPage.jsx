@@ -1,5 +1,5 @@
 /*
- * @Descripttion: 
+ * @Descripttion: 详情页面
  * @Author: qiaozhen.cai
  * @Date: 2024-07-04 15:47:03
  */
@@ -8,51 +8,11 @@ import { Form, Input, Button, Collapse, message,Table, Layout,Menu } from 'antd'
 import { AppstoreOutlined, RollbackOutlined } from '@ant-design/icons';
 import EditableCell from './EditableCell';
 import { useLocation } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import { useIntl } from 'react-intl';
+import { FormattedMessage,useIntl } from 'react-intl';
+import {menuItems} from './HomePage';
 
 const { Header, Sider, Content } = Layout;
 
-const menuItems = [
-  {
-    key: '1',
-    icon: <AppstoreOutlined />,
-    label: '通用政策与SOP',
-    children: [
-      { key: '11', label: '防止贿赂及贪污' },
-      { key: '12', label: '个人信息管理' },
-      { key: '13', label: '信息安全' },
-      { key: '14', label: '举报' },
-    ],
-  },
-  {
-    key: '2',
-    icon: <AppstoreOutlined />,
-    label: '部门政策与SOP',
-    children: [
-      {
-        key: '21',
-        label: 'IT',
-        children: [
-          { key: '211', label: '质量体系相关' },
-          { key: '212', label: '非质量体系相关' },
-        ],
-      },
-      {
-        key: '22',
-        label: '内控',
-        children: [
-          { key: '221', label: '质量体系相关' },
-          { key: '222', label: '非质量体系相关' },
-        ],
-      },
-      { key: '23', label: '行政' },
-      { key: '24', label: '财务' },
-      { key: '25', label: '法务' },
-      { key: '26', label: '采购' },
-    ],
-  },
-];
 
 const siderStyle = {
   textAlign: 'center',
@@ -174,7 +134,7 @@ const DetailPage = () => {
 
   const columns = [
     {
-      title: '完成%',
+      title: intl.formatMessage({ id: 'detail.title.percent', defaultMessage: '完成%' }),
       dataIndex: 'percent',
       render: (_, row) => (
         <EditableCell
@@ -187,7 +147,7 @@ const DetailPage = () => {
       ),
     },
     {
-      title: '完成情况记录日期',
+      title: intl.formatMessage({ id: 'detail.title.finishDate', defaultMessage: '完成情况记录日期' }),
       dataIndex: 'finishDate',
       render: (_, row) => (
         <EditableCell
@@ -200,7 +160,7 @@ const DetailPage = () => {
       ),      
     },
     {
-      title: '预计完成日期',
+      title: intl.formatMessage({ id: 'detail.title.predictDate', defaultMessage: '预计完成日期' }),
       dataIndex: 'predictDate',
       render: (_, row) => (
         <EditableCell
@@ -219,19 +179,19 @@ const DetailPage = () => {
       key: '1',
       collapsible: 'icon',
       label: <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <FormattedMessage id="header.help" defaultMessage="基本信息" />
+        {intl.formatMessage({ id: 'detail.title.basic', defaultMessage: '基本信息' })}
         {editing ? (
           <div style={{ display: 'flex', gap: 10 }}>
             <Button onClick={() => setEditing(false)}>
-              取消
+            {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
             </Button>
             <Button type="primary" onClick={onFinish}>
-              保存
+            {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
             </Button>
           </div>
         ) : (
           <Button type="primary" onClick={() => setEditing(true)}>
-            编辑
+            {intl.formatMessage({ id: 'common.btn.edit', defaultMessage: '编辑' })}
           </Button>
         )}
       </div>,
@@ -241,7 +201,7 @@ const DetailPage = () => {
         form={form}
         labelAlign='left'
         labelCol={{
-          span: 5,
+          span: 7,
         }}
         wrapperCol={{
           span: 16,
@@ -250,11 +210,10 @@ const DetailPage = () => {
           maxWidth: 600,
         }}
         onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
-          label={<FormattedMessage id="header.help" defaultMessage="名称" />}
+          label={intl.formatMessage({ id: 'list.title.name', defaultMessage: '名称' })}
           name="fileName"
           rules={[
             {
@@ -266,19 +225,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="其他代替名称"
-          name="elseName"
-          rules={[
-            {
-              required: true,
-              message: '请输入其他代替名称',
-            },
-          ]}
-        >
-          <Input disabled={!editing} />
-        </Form.Item>
-        <Form.Item
-          label="描述"
+          label={intl.formatMessage({ id: 'list.title.description', defaultMessage: '描述' })}
           name="description"
           rules={[
             {
@@ -290,7 +237,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="发布部门"
+          label={intl.formatMessage({ id: 'list.title.department', defaultMessage: '发布部门' })}
           name="department"
           rules={[
             {
@@ -302,7 +249,31 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="文件编号"
+          label={intl.formatMessage({ id: 'detail.title.contact', defaultMessage: '联系人' })}
+          name="contact"
+          rules={[
+            {
+              required: true,
+              message: '请输入联系人',
+            },
+          ]}
+        >
+          <Input disabled={!editing} />
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({ id: 'detail.title.range', defaultMessage: '适用范围' })}
+          name="range"
+          rules={[
+            {
+              required: true,
+              message: '请输入适用范围',
+            },
+          ]}
+        >
+          <Input disabled={!editing} />
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({ id: 'list.title.fileNo', defaultMessage: '文件编号' })}
           name="fileNo"
           rules={[
             {
@@ -314,7 +285,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="文件类型"
+          label={intl.formatMessage({ id: 'list.title.type', defaultMessage: '文件类型' })}
           name="type"
           rules={[
             {
@@ -326,7 +297,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="语言"
+          label={intl.formatMessage({ id: 'list.title.language', defaultMessage: '语言' })}
           name="language"
           rules={[
             {
@@ -338,7 +309,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="版本号"
+          label={intl.formatMessage({ id: 'list.title.version', defaultMessage: '版本号' })}
           name="version"
           rules={[
             {
@@ -350,7 +321,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="修订时间"
+          label={intl.formatMessage({ id: 'detail.title.changeTime', defaultMessage: '修订时间' })}
           name="date"
           rules={[
             {
@@ -362,7 +333,19 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="来源"
+          label={intl.formatMessage({ id: 'detail.title.content', defaultMessage: '修订内容' })}
+          name="content"
+          rules={[
+            {
+              required: true,
+              message: '请输入常用',
+            },
+          ]}
+        >
+          <Input disabled={!editing} />
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({ id: 'list.title.source', defaultMessage: '来源' })}
           name="source"
           rules={[
             {
@@ -374,42 +357,7 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
         <Form.Item
-          label="常用"
-          name="use"
-          rules={[
-            {
-              required: true,
-              message: '请输入常用',
-            },
-          ]}
-        >
-          <Input disabled={!editing} />
-        </Form.Item>
-      </Form>,
-    },
-    {
-      key: '2',
-      label: '制度内容如下',
-      children: <Form
-        initialValues={record}
-        name="fileUrl"
-        form={form}
-        labelAlign='left'
-        labelCol={{
-          span: 5,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
-        }}
-        onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label=""
+          label={intl.formatMessage({ id: 'detail.title.file', defaultMessage: '文档' })}
           name="fileUrl"
           rules={[
             {
@@ -421,26 +369,24 @@ const DetailPage = () => {
           <Input disabled={!editing} />
         </Form.Item>
       </Form>,
-      showArrow: false,
-      collapsible: "icon"
     },
     {
       key: '3',
       collapsible: 'icon',
       label: <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        培训信息
+        {intl.formatMessage({ id: 'detail.title.train', defaultMessage: '培训信息' })}
         {trainEdit ? (
           <div style={{ display: 'flex', gap: 10 }}>
             <Button onClick={() => setTrainEdit(false)}>
-              取消
+            {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
             </Button>
             <Button type="primary" onClick={trainInfoSave}>
-              保存
+            {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
             </Button>
           </div>
         ) : (
           <Button type="primary" onClick={() => setTrainEdit(true)}>
-            编辑
+            {intl.formatMessage({ id: 'common.btn.edit', defaultMessage: '编辑' })}
           </Button>
         )}
       </div>,
@@ -450,7 +396,7 @@ const DetailPage = () => {
         form={trainForm}
         labelAlign='left'
         labelCol={{
-          span: 5,
+          span: 7
         }}
         wrapperCol={{
           span: 16,
@@ -460,25 +406,25 @@ const DetailPage = () => {
         }}
         autoComplete="off"
       >
-        <Form.Item
-          label="培训课程名称"
-          name="trainName"
+                <Form.Item
+          label={intl.formatMessage({ id: 'detail.title.platform', defaultMessage: '培训平台' })}
+          name="platform"
           rules={[
             {
               required: true,
-              message: '请输入培训课程名称',
+              message: '请输入培训平台',
             },
           ]}
         >
           <Input disabled={!trainEdit} />
         </Form.Item>
         <Form.Item
-          label="培训链接"
-          name="trainUrl"
+          label={intl.formatMessage({ id: 'detail.title.class', defaultMessage: '培训课程名称' })}
+          name="trainName"
           rules={[
             {
               required: true,
-              message: '请输入培训链接',
+              message: '请输入培训课程名称',
             },
           ]}
         >
@@ -506,7 +452,7 @@ const DetailPage = () => {
       </Sider>
       <Content >
       <Button style={{ display: 'flex', margin: '5px 5px 20px 0px' }} icon={<RollbackOutlined />}
-      onClick={()=>{history.go(-1)}}>返回</Button>
+      onClick={()=>{history.go(-1)}}>{intl.formatMessage({ id: 'common.btn.back', defaultMessage: '返回' })}</Button>
     <Collapse items={items} defaultActiveKey={['1', '2', '3']} />
       </Content>
       

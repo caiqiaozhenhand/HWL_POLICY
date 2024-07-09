@@ -5,53 +5,213 @@
  */
 import { useState, useEffect } from 'react'
 import './App.css'
-import { Menu, Flex, Table, Layout, Select, Input, ConfigProvider, Modal } from 'antd'
+import { Menu, Flex, Table, Layout, Select, Input } from 'antd'
 import { AppstoreOutlined } from '@ant-design/icons';
 import './App.css';
-import DetailPage from './DetailPage';
-import { Link,useLocation } from 'react-router-dom';
-import { useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
-const items = [
+export const menuItems = [
   {
     key: '1',
     icon: <AppstoreOutlined />,
-    label: '通用政策与SOP',
-    children: [
-      { key: '11', label: '防止贿赂及贪污' },
-      { key: '12', label: '个人信息管理' },
-      { key: '13', label: '信息安全' },
-      { key: '14', label: '举报' },
-    ],
+    label: <FormattedMessage id="menu.corporate.policy" defaultMessage="集团政策" />,
   },
   {
     key: '2',
     icon: <AppstoreOutlined />,
-    label: '部门政策与SOP',
+    label: <FormattedMessage id="menu.functional.policy" defaultMessage="职能政策" />,
     children: [
+      { key: '21', label: <FormattedMessage id="menu.business.development" defaultMessage="商务开发" /> },
+      { key: '22', label: <FormattedMessage id="menu.legal" defaultMessage="法务" /> },
+      { key: '23', label: <FormattedMessage id="menu.investor.capital" defaultMessage="投资者关系和资本战略" /> },
+      { key: '24', label: <FormattedMessage id="menu.corporate.communications" defaultMessage="企业管理与传播" /> },
+      { key: '25', label: <FormattedMessage id="menu.operation.risk" defaultMessage="运营与风险管理" /> },
+      { key: '26', label: <FormattedMessage id="menu.EHS" defaultMessage="环境健康与安全" /> },
       {
-        key: '21',
-        label: 'IT',
+        key: '27',
+        label: <FormattedMessage id="menu.quality.assurance" defaultMessage="质量保证管理" />,
         children: [
-          { key: '211', label: '质量体系相关' },
-          { key: '212', label: '非质量体系相关' },
+          { key: '271', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+        ],
+      },
+      { key: '28', label: <FormattedMessage id="menu.human.resource" defaultMessage="人力资源管理" /> },
+      { key: '29', label: <FormattedMessage id="menu.procurement" defaultMessage="采购" /> },
+      { key: '30', label: <FormattedMessage id="menu.government.affairs" defaultMessage="政府事务" /> },
+      { key: '31', label: <FormattedMessage id="menu.finance" defaultMessage="财务" /> },
+      { key: '32', label: <FormattedMessage id="menu.tax" defaultMessage="税务" /> },
+      { key: '33', label: <FormattedMessage id="menu.personal.protection" defaultMessage="个人信息保护" /> },
+      { key: '34', label: <FormattedMessage id="menu.chop.management" defaultMessage="公章管理" /> },
+      {
+        key: '35',
+        label: <FormattedMessage id="menu.info.technolofy" defaultMessage="信息技术" />,
+        children: [
+          { key: '351', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '352', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      { key: '36', label: <FormattedMessage id="menu.compliance" defaultMessage="合规" /> },
+      { key: '37', label: <FormattedMessage id="menu.administration" defaultMessage="行政" /> },
+      { key: '38', label: <FormattedMessage id="menu.OBD.commercial" defaultMessage="OBD商务" /> },
+      { key: '39', label: <FormattedMessage id="menu.OBD.solid" defaultMessage="OBD血液瘤" /> },
+      { key: '40', label: <FormattedMessage id="menu.OBD.malignancy" defaultMessage="OBD实体瘤" /> },
+      {
+        key: '41',
+        label: <FormattedMessage id="menu.clinical.operation" defaultMessage="临床运营" />,
+        children: [
+          { key: '411', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
         ],
       },
       {
-        key: '22',
-        label: '内控',
+        key: '42',
+        label: <FormattedMessage id="menu.medical" defaultMessage="医学" />,
         children: [
-          { key: '221', label: '质量体系相关' },
-          { key: '222', label: '非质量体系相关' },
+          { key: '421', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
         ],
       },
-      { key: '23', label: '行政' },
-      { key: '24', label: '财务' },
-      { key: '25', label: '法务' },
-      { key: '26', label: '采购' },
+      {
+        key: '43',
+        label: <FormattedMessage id="menu.biometrics" defaultMessage="生物统计" />,
+        children: [
+          { key: '431', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+        ],
+      },
+      {
+        key: '44',
+        label: <FormattedMessage id="menu.medical.affairs" defaultMessage="医学事务" />,
+        children: [
+          { key: '441', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+        ],
+      },
+      {
+        key: '45',
+        label: <FormattedMessage id="menu.regulatory.affairs" defaultMessage="注册事务" />,
+        children: [
+          { key: '451', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+        ],
+      },
+      {
+        key: '46',
+        label: <FormattedMessage id="menu.chemistry" defaultMessage="化学" />,
+        children: [
+          { key: '461', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '462', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '47',
+        label: <FormattedMessage id="menu.biologics.research" defaultMessage="生物药研究" />,
+        children: [
+          { key: '471', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '472', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '48',
+        label: <FormattedMessage id="menu.DMPK" defaultMessage="药物代谢与动力学" />,
+        children: [
+          { key: '481', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '482', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '49',
+        label: <FormattedMessage id="menu.oncology" defaultMessage="肿瘤研究" />,
+        children: [
+          { key: '491', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '492', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '50',
+        label: <FormattedMessage id="menu.translational" defaultMessage="转化医学" />,
+        children: [
+          { key: '501', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '502', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '51',
+        label: <FormattedMessage id="menu.biologics.cmc" defaultMessage="生物药CMC" />,
+        children: [
+          { key: '511', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '512', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '52',
+        label: <FormattedMessage id="menu.formulation" defaultMessage="药剂制剂" />,
+        children: [
+          { key: '521', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '522', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '53',
+        label: <FormattedMessage id="menu.analytical" defaultMessage="分析开发" />,
+        children: [
+          { key: '531', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '532', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '54',
+        label: <FormattedMessage id="menu.process.chemistry" defaultMessage="工艺化学" />,
+        children: [
+          { key: '541', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '542', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '55',
+        label: <FormattedMessage id="menu.supply.chain" defaultMessage="供应链管理" />,
+        children: [
+          { key: '551', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '552', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '56',
+        label: <FormattedMessage id="menu.SH.operation" defaultMessage="上海工厂运营" />,
+        children: [
+          { key: '561', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '562', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '57',
+        label: <FormattedMessage id="menu.SH.quality" defaultMessage="上海工厂质量" />,
+        children: [
+          { key: '571', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '572', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      { key: '58', label: <FormattedMessage id="menu.SH.procurement" defaultMessage="上海工厂采购" /> },
+      { key: '59', label: <FormattedMessage id="menu.SH.admin" defaultMessage="上海工厂行政" /> },
+      { key: '60', label: <FormattedMessage id="menu.SH.finance" defaultMessage="上海工厂财务" /> },
+      {
+        key: '61',
+        label: <FormattedMessage id="menu.SZ.operation" defaultMessage="苏州工厂运营" />,
+        children: [
+          { key: '611', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '612', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      {
+        key: '62',
+        label: <FormattedMessage id="menu.SZ.quality" defaultMessage="苏州工厂质量" />,
+        children: [
+          { key: '621', label: <FormattedMessage id="menu.quality.system" defaultMessage="质量体系相关" /> },
+          { key: '622', label: <FormattedMessage id="menu.others" defaultMessage="其他" /> },
+        ],
+      },
+      { key: '63', label: <FormattedMessage id="menu.SZ.finance" defaultMessage="苏州工厂财务" /> },
+      { key: '64', label: <FormattedMessage id="menu.SZ.HR" defaultMessage="苏州工厂人力资源管理" /> },
+      { key: '65', label: <FormattedMessage id="menu.Beijing" defaultMessage="北京办" /> },
+
     ],
   },
 ];
@@ -83,9 +243,9 @@ function App(props) {
   const [sourceData, setSourceData] = useState([]);//原数据
   const [filterData, setFilteredData] = useState([]);//筛选后数据
   const [isModalOpen, setIsModalOpen] = useState(false);//是否展示用户帮助modal
-const [showDrawer, setShowDrawer]=useState(false);//是否展示详情
-const [params, setParams]=useState({});//props传参
-const intl = useIntl();
+  const [showDrawer, setShowDrawer] = useState(false);//是否展示详情
+  const [params, setParams] = useState({});//props传参
+  const intl = useIntl();
 
   useEffect(() => {
     fetch('http://localhost:3000/api/query/list')
@@ -101,25 +261,25 @@ const intl = useIntl();
    * 查看详情
    * @param {*} record
    * @return {*}
-   */  
-  const openDetail=(record)=>{
-    const obj={record, backToList}
+   */
+  const openDetail = (record) => {
+    const obj = { record, backToList }
     setParams(obj)
-   setShowDrawer(true)
+    setShowDrawer(true)
   }
 
   /**
    * 返回列表页
    * @return {*}
-   */  
+   */
   const backToList = () => {
     fetch('http://localhost:3000/api/query/list')
-    .then(response => response.json())
-    .then(data => {
-      setFilteredData(data)
-      setSourceData(data)
-    })
-    .catch(error => console.error('发生错误：', error));
+      .then(response => response.json())
+      .then(data => {
+        setFilteredData(data)
+        setSourceData(data)
+      })
+      .catch(error => console.error('发生错误：', error));
     setShowDrawer(false)
   }
 
@@ -127,7 +287,7 @@ const intl = useIntl();
   /**
    * 筛选数据
    * @return {*}
-   */  
+   */
   const applyFilters = () => {
     let filteredData = sourceData;
     // 根据 下拉框 筛选
@@ -239,10 +399,10 @@ const intl = useIntl();
       key: 'action',
       width: 120,
       render: (_, record) => (
-                      <Link  to={{
-              pathname: `/detail/${record.key}`,
-              state: { record: record } 
-            }}>{intl.formatMessage({ id: 'list.content.detail', defaultMessage: '查看详情' })}</Link>
+        <Link to={{
+          pathname: `/detail/${record.key}`,
+          state: { record: record }
+        }}>{intl.formatMessage({ id: 'list.content.detail', defaultMessage: '查看详情' })}</Link>
       ),
     },
   ];
@@ -250,64 +410,62 @@ const intl = useIntl();
 
   return (
     <>
-        <Layout style={layoutStyle}>
-          <Header style={headerStyle}>
-            <Flex gap="middle" align="start" vertical>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <div style={{ display: 'flex', width: '30%', gap: 20 }} >
-                  <Select
-                    style={{
-                      width: 300,
-                      textAlign: 'left'
-                    }}
-                    mode="multiple"
-                    allowClear
-                    onChange={val => setSelectVal(val)}
-                    placeholder='请勾选'
-                    options={[
-                      {
-                        value: '1',
-                        label: 'HMPL',
-                      },
-                      {
-                        value: '2',
-                        label: 'HSPL',
-                      },
-                      {
-                        value: '3',
-                        label: 'HMPS',
-                      },
-                    ]}
-                  />
-                  <Search placeholder="请输入搜索关键词" onSearch={(val) => setSearchText(val)} enterButton />
-                </div>
+      <Layout style={layoutStyle}>
+        <Header style={headerStyle}>
+          <Flex gap="middle" align="start" vertical>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', width: '50vw', gap: 20 }} >
+                <Select
+                  style={{
+                    minWidth: '50%',
+                    textAlign: 'left'
+                  }}
+                  mode="multiple"
+                  maxTagCount={2}
+                  allowClear
+                  onChange={val => setSelectVal(val)}
+                  placeholder={intl.formatMessage({ id: 'warn.please.select', defaultMessage: '请勾选' })}
+                  options={[
+                    {  value: '1',   label: intl.formatMessage({ id: 'select.option.SH', defaultMessage: '和记黄埔医药（上海）有限公司' })},
+                    {  value: '2',   label: intl.formatMessage({ id: 'select.option.SZ', defaultMessage: '和记黄埔医药（苏州） 有限公司' })},
+                    {  value: '3',   label: intl.formatMessage({ id: 'select.option.GY', defaultMessage: '国药控股和记黄埔医药（上海）有限公司' })},
+                    {  value: '4',   label: intl.formatMessage({ id: 'select.option.BJP', defaultMessage: '和黄健宝保健品有限公司' })},
+                    {  value: '5',   label: intl.formatMessage({ id: 'select.option.SHHH', defaultMessage: '上海和黄药业有限公司' })},
+                    {  value: '6',   label: intl.formatMessage({ id: 'select.option.HK', defaultMessage: 'HUTCHMED (Hong Kong) Limited' })},
+                    {  value: '7',   label: intl.formatMessage({ id: 'select.option.International', defaultMessage: 'HUTCHMED International Corporation' })},
+                    {  value: '8',   label: intl.formatMessage({ id: 'select.option.US', defaultMessage: 'HUTCHMED US Corporation' })},
+                    {  value: '9',   label: intl.formatMessage({ id: 'select.option.BV', defaultMessage: 'HUTCHMED Europe B.V.' })},
+                  ]}
+                />
+                <Search placeholder="请输入搜索关键词" onSearch={(val) => setSearchText(val)} enterButton />
               </div>
-            </Flex>
-          </Header>
-          <Layout>
-            <Sider width="25%" style={siderStyle}>
-              <Menu
-                mode="inline"
-                defaultOpenKeys={['1', '2']}
-                items={items}
-                onClick={(e) => setStateSelectedKeys(e.keyPath)}
-              />
-            </Sider>
-            <Content >
-              <Table
-                columns={columns}
-                dataSource={filterData}
-                scroll={{
-                  x: 1560,
-                }}
-                pagination={{
-                  showTotal: () => `${intl.formatMessage({ id: 'common.page.total', defaultMessage: '共{total}条' },{total: filterData.length})}`
-                }}
-              />
-            </Content>
-            
-          </Layout>
+            </div>
+          </Flex>
+        </Header>
+        <Layout>
+          <Sider width="18%" style={siderStyle}>
+            <Menu
+              mode="inline"
+              defaultOpenKeys={['1', '2']}
+              items={menuItems}
+              onClick={(e) => setStateSelectedKeys(e.keyPath)}
+            />
+          </Sider>
+          <Content >
+            <Table
+              columns={columns}
+              dataSource={filterData}
+              scroll={{
+                x: 1560,
+              }}
+              pagination={{
+                showTotal: () => `${intl.formatMessage({ id: 'common.page.total', defaultMessage: '共{total}条' }, { total: filterData.length })}`
+              }}
+            />
+          </Content>
+
         </Layout>
+      </Layout>
     </>
   )
 }
