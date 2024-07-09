@@ -4,16 +4,17 @@
  * @Date: 2024-07-04 14:00:28
  */
 import { useState, useEffect } from 'react'
-import './App.css'
 import { Menu, Flex, Table, Layout, Select, Input } from 'antd'
 import { AppstoreOutlined } from '@ant-design/icons';
 import './App.css';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useLocation } from 'react-router-dom';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
+//侧边栏数据
 export const menuItems = [
   {
     key: '1',
@@ -235,17 +236,15 @@ const layoutStyle = {
   overflow: 'hidden',
 };
 
-
-function App(props) {
+function HomePage(props) {
   const [selectedKeys, setStateSelectedKeys] = useState('');//选中的menu
   const [searchText, setSearchText] = useState('');//输入框内容
   const [selectVal, setSelectVal] = useState('');//下拉框选择内容 
-  const [sourceData, setSourceData] = useState([]);//原数据
+  const [sourceData, setSourceData] = useState([]);//原始数据
   const [filterData, setFilteredData] = useState([]);//筛选后数据
-  const [isModalOpen, setIsModalOpen] = useState(false);//是否展示用户帮助modal
-  const [showDrawer, setShowDrawer] = useState(false);//是否展示详情
-  const [params, setParams] = useState({});//props传参
   const intl = useIntl();
+
+  const pathname = useLocation().pathname;
 
   useEffect(() => {
     fetch('http://localhost:3000/api/query/list')
@@ -256,33 +255,6 @@ function App(props) {
       })
       .catch(error => console.error('发生错误：', error));
   }, [])
-
-  /**
-   * 查看详情
-   * @param {*} record
-   * @return {*}
-   */
-  const openDetail = (record) => {
-    const obj = { record, backToList }
-    setParams(obj)
-    setShowDrawer(true)
-  }
-
-  /**
-   * 返回列表页
-   * @return {*}
-   */
-  const backToList = () => {
-    fetch('http://localhost:3000/api/query/list')
-      .then(response => response.json())
-      .then(data => {
-        setFilteredData(data)
-        setSourceData(data)
-      })
-      .catch(error => console.error('发生错误：', error));
-    setShowDrawer(false)
-  }
-
 
   /**
    * 筛选数据
@@ -312,26 +284,27 @@ function App(props) {
         // 根据点击的菜单项的不同层级来筛选数据
         if (selectedKeys.length === 1) {
           // 一级菜单
-          return item.level1 === selectedKeys[0];
+          return item.level1?.includes(selectedKeys[0]);
         } else if (selectedKeys.length === 2) {
           // 二级菜单
-          return item.level2 === selectedKeys[0];
+          return item.level2?.includes(selectedKeys[0]);
         } else if (selectedKeys.length === 3) {
           // 三级菜单
-          return item.level3 === selectedKeys[0];
+          return item.level3?.includes(selectedKeys[0]);
         }
-        return true; // 默认返回true，不做过滤
+        return true;
       });
     }
     setFilteredData(filteredData);
   };
 
-
   useEffect(() => {
+    //下拉框、输入框、侧边栏改变则调用applyFilters
     applyFilters();
   }, [selectedKeys, searchText, selectVal]);
 
 
+  //列配置
   const columns = [
     {
       title: intl.formatMessage({ id: 'list.title.name', defaultMessage: '名称' }),
@@ -368,19 +341,19 @@ function App(props) {
       title: intl.formatMessage({ id: 'list.title.version', defaultMessage: '版本' }),
       dataIndex: 'version',
       key: 'version',
-      width: 60,
+      width: 80,
     },
     {
       title: intl.formatMessage({ id: 'list.title.department', defaultMessage: '归属部门' }),
       dataIndex: 'department',
       key: 'department',
-      width: 90,
+      width: 110,
     },
     {
       title: intl.formatMessage({ id: 'list.title.source', defaultMessage: '来源' }),
       dataIndex: 'source',
       key: 'source',
-      width: 60,
+      width: 80,
     },
     {
       title: intl.formatMessage({ id: 'list.title.language', defaultMessage: '语言' }),
@@ -402,11 +375,24 @@ function App(props) {
         <Link to={{
           pathname: `/detail/${record.key}`,
           state: { record: record }
-        }}>{intl.formatMessage({ id: 'list.content.detail', defaultMessage: '查看详情' })}</Link>
+        }}>
+          {intl.formatMessage({ id: 'list.content.detail', defaultMessage: '查看详情' })}
+        </Link>
       ),
     },
   ];
 
+  /**
+   * 侧边栏点击，更新title
+   * @param {*} e
+   * @return {*}
+   */
+  const handleMenuClick = (e) => {
+    setStateSelectedKeys(e.keyPath);
+    if (pathname === '/') {
+      props.updateTitle(e.keyPath?.includes('1') ?  'title.corporate.policy' : 'title.functional.policy')
+    }
+  }
 
   return (
     <>
@@ -424,20 +410,20 @@ function App(props) {
                   maxTagCount={2}
                   allowClear
                   onChange={val => setSelectVal(val)}
-                  placeholder={intl.formatMessage({ id: 'warn.please.select', defaultMessage: '请勾选' })}
+                  placeholder={intl.formatMessage({ id: 'warn.please.select', defaultMessage: intl.formatMessage({ id: 'warn.please.select', defaultMessage: '请勾选' }) })}
                   options={[
-                    {  value: '1',   label: intl.formatMessage({ id: 'select.option.SH', defaultMessage: '和记黄埔医药（上海）有限公司' })},
-                    {  value: '2',   label: intl.formatMessage({ id: 'select.option.SZ', defaultMessage: '和记黄埔医药（苏州） 有限公司' })},
-                    {  value: '3',   label: intl.formatMessage({ id: 'select.option.GY', defaultMessage: '国药控股和记黄埔医药（上海）有限公司' })},
-                    {  value: '4',   label: intl.formatMessage({ id: 'select.option.BJP', defaultMessage: '和黄健宝保健品有限公司' })},
-                    {  value: '5',   label: intl.formatMessage({ id: 'select.option.SHHH', defaultMessage: '上海和黄药业有限公司' })},
-                    {  value: '6',   label: intl.formatMessage({ id: 'select.option.HK', defaultMessage: 'HUTCHMED (Hong Kong) Limited' })},
-                    {  value: '7',   label: intl.formatMessage({ id: 'select.option.International', defaultMessage: 'HUTCHMED International Corporation' })},
-                    {  value: '8',   label: intl.formatMessage({ id: 'select.option.US', defaultMessage: 'HUTCHMED US Corporation' })},
-                    {  value: '9',   label: intl.formatMessage({ id: 'select.option.BV', defaultMessage: 'HUTCHMED Europe B.V.' })},
+                    { value: '1', label: intl.formatMessage({ id: 'select.option.SH', defaultMessage: '和记黄埔医药（上海）有限公司' }) },
+                    { value: '2', label: intl.formatMessage({ id: 'select.option.SZ', defaultMessage: '和记黄埔医药（苏州） 有限公司' }) },
+                    { value: '3', label: intl.formatMessage({ id: 'select.option.GY', defaultMessage: '国药控股和记黄埔医药（上海）有限公司' }) },
+                    { value: '4', label: intl.formatMessage({ id: 'select.option.BJP', defaultMessage: '和黄健宝保健品有限公司' }) },
+                    { value: '5', label: intl.formatMessage({ id: 'select.option.SHHH', defaultMessage: '上海和黄药业有限公司' }) },
+                    { value: '6', label: intl.formatMessage({ id: 'select.option.HK', defaultMessage: 'HUTCHMED (Hong Kong) Limited' }) },
+                    { value: '7', label: intl.formatMessage({ id: 'select.option.International', defaultMessage: 'HUTCHMED International Corporation' }) },
+                    { value: '8', label: intl.formatMessage({ id: 'select.option.US', defaultMessage: 'HUTCHMED US Corporation' }) },
+                    { value: '9', label: intl.formatMessage({ id: 'select.option.BV', defaultMessage: 'HUTCHMED Europe B.V.' }) },
                   ]}
                 />
-                <Search placeholder="请输入搜索关键词" onSearch={(val) => setSearchText(val)} enterButton />
+                <Search placeholder={intl.formatMessage({ id: 'warn.please.input', defaultMessage: '请输入搜索关键词' })} onSearch={(val) => setSearchText(val)} enterButton />
               </div>
             </div>
           </Flex>
@@ -448,7 +434,7 @@ function App(props) {
               mode="inline"
               defaultOpenKeys={['1', '2']}
               items={menuItems}
-              onClick={(e) => setStateSelectedKeys(e.keyPath)}
+              onClick={handleMenuClick}
             />
           </Sider>
           <Content >
@@ -470,4 +456,4 @@ function App(props) {
   )
 }
 
-export default App
+export default HomePage

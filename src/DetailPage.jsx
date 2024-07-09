@@ -3,16 +3,15 @@
  * @Author: qiaozhen.cai
  * @Date: 2024-07-04 15:47:03
  */
-import  { useEffect, useState } from "react";
-import { Form, Input, Button, Collapse, message,Table, Layout,Menu } from 'antd'
-import { AppstoreOutlined, RollbackOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import { Form, Input, Button, Collapse, message, Table, Layout, Menu } from 'antd'
+import { RollbackOutlined } from '@ant-design/icons';
 import EditableCell from './EditableCell';
 import { useLocation } from 'react-router-dom';
-import { FormattedMessage,useIntl } from 'react-intl';
-import {menuItems} from './HomePage';
+import { useIntl } from 'react-intl';
+import { menuItems } from './HomePage';
 
-const { Header, Sider, Content } = Layout;
-
+const { Sider, Content } = Layout;
 
 const siderStyle = {
   textAlign: 'center',
@@ -27,18 +26,22 @@ const layoutStyle = {
 };
 
 
-const DetailPage = () => {
+const DetailPage = (props) => {
   const location = useLocation();
   const { record } = location.state;
   const intl = useIntl();
 
-  const [form ] = Form.useForm();
-  const [trainForm ] = Form.useForm();
+  const [form] = Form.useForm();
+  const [trainForm] = Form.useForm();
   const [editing, setEditing] = useState(false); //基本信息、制度内容
   const [trainEdit, setTrainEdit] = useState(false);//培训信息
-  const [tableData, setTableData]=useState([]);//培训完成情况data
+  const [tableData, setTableData] = useState([]);//培训完成情况data
 
-  useEffect(() => {
+  /**
+   * 培训信息查询接口
+   * @return {*}
+   */
+  const handleQuery = () => {
     fetch(`http://localhost:3000/api/query/train-info/${record.key}`)
       .then(response => response.json())
       .then(data => {
@@ -48,6 +51,10 @@ const DetailPage = () => {
         setTableData(data.content)
       })
       .catch(error => console.error('发生错误：', error));
+  }
+
+  useEffect(() => {
+    handleQuery()
   }, [])
 
   /**
@@ -77,7 +84,7 @@ const DetailPage = () => {
         setEditing(false);
       })
       .catch((error) => {
-        message.warning(intl.formatMessage({ id: 'header.help', defaultMessage: '校验失败，请检查表单输入' }));
+        message.warning(intl.formatMessage({ id: 'warn.validate.error', defaultMessage: '校验失败，请检查表单输入' }));
         console.log('Validation error:', error);
       });
   };
@@ -85,10 +92,10 @@ const DetailPage = () => {
   /**
    * 培训信息-保存
    * @return {*}
-   */  
-  const trainInfoSave=()=>{
+   */
+  const trainInfoSave = () => {
     const values = trainForm.getFieldsValue();
-    const obj={
+    const obj = {
       ...values,
       content: tableData
     }
@@ -122,8 +129,8 @@ const DetailPage = () => {
    * 更新表格数据
    * @param {*} row
    * @return {*}
-   */  
-  const handleTableData=(row)=>{
+   */
+  const handleTableData = (row) => {
     const newData = [...tableData];
     const index = newData.findIndex((item) => row.key === item.key);
     if (index > -1) {
@@ -132,16 +139,17 @@ const DetailPage = () => {
     }
   }
 
+  //培训完成情况列配置
   const columns = [
     {
       title: intl.formatMessage({ id: 'detail.title.percent', defaultMessage: '完成%' }),
       dataIndex: 'percent',
       render: (_, row) => (
         <EditableCell
-        dataIndex='percent'
-        record={row}
-        rules={[{required:true, message: '请输入完成%'}]}
-        onSave={(value) => handleTableData({ ...row, percent: value })}
+          dataIndex='percent'
+          record={row}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }) }]}
+          onSave={(value) => handleTableData({ ...row, percent: value })}
           editing={trainEdit}
         />
       ),
@@ -151,28 +159,54 @@ const DetailPage = () => {
       dataIndex: 'finishDate',
       render: (_, row) => (
         <EditableCell
-        dataIndex='finishDate'
-        record={row}
-        rules={[{required:true, message: '请输入完成情况记录日期'}]}
-        onSave={(value) => handleTableData({ ...row, finishDate: value })}
+          dataIndex='finishDate'
+          record={row}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }) }]}
+          onSave={(value) => handleTableData({ ...row, finishDate: value })}
           editing={trainEdit}
         />
-      ),      
+      ),
     },
     {
       title: intl.formatMessage({ id: 'detail.title.predictDate', defaultMessage: '预计完成日期' }),
       dataIndex: 'predictDate',
       render: (_, row) => (
         <EditableCell
-        dataIndex='predictDate'
-        record={row}
-        rules={[{required:true, message: '请输入预计完成日期'}]}
-        onSave={(value) => handleTableData({ ...row, predictDate: value })}
+          dataIndex='predictDate'
+          record={row}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }), }]}
+          onSave={(value) => handleTableData({ ...row, predictDate: value })}
           editing={trainEdit}
         />
-      ),      
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'detail.operation', defaultMessage: '操作' }),
+      dataIndex: 'operation',
+      render: (_, row) => (
+        <Button type="link" onClick={() => handleDelete(row.key)} disabled={!trainEdit}>
+          {intl.formatMessage({ id: 'detail.operation.delete', defaultMessage: '删除' })}
+        </Button>
+      ),
     },
   ];
+
+  // 处理删除行事件
+  const handleDelete = (key) => {
+    const newData = tableData.filter(item => item.key !== key);
+    setTableData(newData);
+  };
+
+  // 处理新增行事件
+  const handleAdd = () => {
+    const newData = [...tableData, {
+      key: tableData.length + 1, // 使用当前数量+1作为新行的唯一标识
+      percent: '',
+      finishDate: '',
+      predictDate: '',
+    }];
+    setTableData(newData);
+  };
 
   const items = [
     {
@@ -182,11 +216,11 @@ const DetailPage = () => {
         {intl.formatMessage({ id: 'detail.title.basic', defaultMessage: '基本信息' })}
         {editing ? (
           <div style={{ display: 'flex', gap: 10 }}>
-            <Button onClick={() => setEditing(false)}>
-            {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
+            <Button onClick={() => { form.setFieldsValue(record); setEditing(false); }}>
+              {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
             </Button>
             <Button type="primary" onClick={onFinish}>
-            {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
+              {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
             </Button>
           </div>
         ) : (
@@ -218,7 +252,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: <FormattedMessage id="header.help" defaultMessage="请输入名称" />,
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -230,7 +264,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入描述',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -242,7 +276,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入发布部门',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -254,7 +288,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入联系人',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -266,7 +300,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入适用范围',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -278,7 +312,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入文件编号',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -290,7 +324,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入文件类型',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -302,7 +336,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入语言',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -314,7 +348,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入版本号',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -326,7 +360,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入修订时间',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -338,7 +372,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入常用',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -350,7 +384,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入来源',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -362,7 +396,7 @@ const DetailPage = () => {
           rules={[
             {
               required: true,
-              message: '请输入文件链接',
+              message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
             },
           ]}
         >
@@ -371,17 +405,17 @@ const DetailPage = () => {
       </Form>,
     },
     {
-      key: '3',
+      key: '2',
       collapsible: 'icon',
       label: <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         {intl.formatMessage({ id: 'detail.title.train', defaultMessage: '培训信息' })}
         {trainEdit ? (
           <div style={{ display: 'flex', gap: 10 }}>
-            <Button onClick={() => setTrainEdit(false)}>
-            {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
+            <Button onClick={() => { setTrainEdit(false); handleQuery() }}>
+              {intl.formatMessage({ id: 'common.btn.cancel', defaultMessage: '取消' })}
             </Button>
             <Button type="primary" onClick={trainInfoSave}>
-            {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
+              {intl.formatMessage({ id: 'common.btn.save', defaultMessage: '保存' })}
             </Button>
           </div>
         ) : (
@@ -391,58 +425,61 @@ const DetailPage = () => {
         )}
       </div>,
       children:
-       <Form
-        name="trainInfo"
-        form={trainForm}
-        labelAlign='left'
-        labelCol={{
-          span: 7
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
-        }}
-        autoComplete="off"
-      >
-                <Form.Item
-          label={intl.formatMessage({ id: 'detail.title.platform', defaultMessage: '培训平台' })}
-          name="platform"
-          rules={[
-            {
-              required: true,
-              message: '请输入培训平台',
-            },
-          ]}
+        <Form
+          name="trainInfo"
+          form={trainForm}
+          labelAlign='left'
+          labelCol={{
+            span: 7
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          style={{
+            maxWidth: 600,
+          }}
+          autoComplete="off"
         >
-          <Input disabled={!trainEdit} />
-        </Form.Item>
-        <Form.Item
-          label={intl.formatMessage({ id: 'detail.title.class', defaultMessage: '培训课程名称' })}
-          name="trainName"
-          rules={[
-            {
-              required: true,
-              message: '请输入培训课程名称',
-            },
-          ]}
-        >
-          <Input disabled={!trainEdit} />
-        </Form.Item>
-        <Table
-      bordered
-      dataSource={tableData}
-      columns={columns
-      }
-      rowClassName="editable-row"
-    />
-      </Form>
+          <Form.Item
+            label={intl.formatMessage({ id: 'detail.title.platform', defaultMessage: '培训平台' })}
+            name="platform"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
+              },
+            ]}
+          >
+            <Input disabled={!trainEdit} />
+          </Form.Item>
+          <Form.Item
+            label={intl.formatMessage({ id: 'detail.title.class', defaultMessage: '培训课程名称' })}
+            name="trainName"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({ id: 'warn.required', defaultMessage: '请输入' }),
+              },
+            ]}
+          >
+            <Input disabled={!trainEdit} />
+          </Form.Item>
+          {trainEdit && <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
+            {intl.formatMessage({ id: 'detail.operation.add', defaultMessage: '新增' })}
+          </Button>}
+          <Table
+            bordered
+            dataSource={tableData}
+            columns={columns
+            }
+            pagination={false}
+          />
+        </Form>
     },
   ];
 
   return <>
-  <Layout style={layoutStyle}>
+    <Layout style={layoutStyle}>
       <Sider width="25%" style={siderStyle}>
         <Menu
           mode="inline"
@@ -451,13 +488,12 @@ const DetailPage = () => {
         />
       </Sider>
       <Content >
-      <Button style={{ display: 'flex', margin: '5px 5px 20px 0px' }} icon={<RollbackOutlined />}
-      onClick={()=>{history.go(-1)}}>{intl.formatMessage({ id: 'common.btn.back', defaultMessage: '返回' })}</Button>
-    <Collapse items={items} defaultActiveKey={['1', '2', '3']} />
+        <Button style={{ display: 'flex', margin: '5px 5px 20px 0px' }} icon={<RollbackOutlined />}
+          onClick={() => { props.updateTitle('title.corporate.policy'); history.go(-1) }}>{intl.formatMessage({ id: 'common.btn.back', defaultMessage: '返回' })}</Button>
+        <Collapse items={items} defaultActiveKey={['1', '2']} />
       </Content>
-      
     </Layout>
-</>
+  </>
 }
 
 export default DetailPage

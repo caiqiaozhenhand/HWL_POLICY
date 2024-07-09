@@ -17,7 +17,7 @@ const locales = {
 
 const cache = createIntlCache();
 
-export const getIntl = async(locale) => {
+export const getIntl = async (locale) => {
   let messages;
   try {
     messages = await import(`./locales/${locale}.json`); // 使用import语法动态导入JSON文件
@@ -25,7 +25,7 @@ export const getIntl = async(locale) => {
     console.error(`Failed to load locale ${locale}:`, error);
     messages = {}; // 处理加载失败的情况
   }
-    return createIntl(
+  return createIntl(
     {
       locale,
       messages,

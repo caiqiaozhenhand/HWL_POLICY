@@ -1,7 +1,7 @@
-import   {  useState } from 'react';
+import { useState } from 'react';
 import { Form, Input } from 'antd';
 
-const EditableCell = ({ editing, dataIndex,  record, rules,onSave }) => {
+const EditableCell = ({ editing, dataIndex, record, rules, onSave }) => {
   const [inputValue, setInputValue] = useState(record[dataIndex]);
 
   const handleInputChange = (e) => {

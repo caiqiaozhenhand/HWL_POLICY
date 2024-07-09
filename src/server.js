@@ -1,11 +1,12 @@
 /*
- * @Descripttion: 
+ * @Descripttion: express服务
  * @Author: qiaozhen.cai
  * @Date: 2024-07-04 14:07:59
  */
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser'
+import { Row } from 'antd';
 
 const app = express();
 app.use(cors());
@@ -30,8 +31,9 @@ let data = [
     level1: '1',    /** 这里的level 可以用key或者id 取代名字  **/
     level2: '11',
     level3: '',
-    use:'',
-    fileUrl:'www.baidu.com'
+    contact: 'cqz',
+    range: 'all',
+    fileUrl: 'www.baidu.com'
   },
   {
     key: '2',
@@ -81,7 +83,7 @@ let data = [
     train: '100%',
     scope: '1,3',
     level1: '1',
-    level2:'14'
+    level2: '14'
   },
   {
     key: '5',
@@ -95,9 +97,9 @@ let data = [
     source: 'Veeva',
     language: '中英双语 Bilingual',
     train: '100%',
-    scope:'3',
+    scope: '3',
     level1: '2',
-    level2:'21',
+    level2: '21',
     level3: '211',
   },
   {
@@ -113,7 +115,7 @@ let data = [
     language: '中英双语 Bilingual',
     train: '100%',
     level1: '2',
-    level2:'21',
+    level2: '21',
     level3: '212',
   },
   {
@@ -128,8 +130,8 @@ let data = [
     source: 'Veeva',
     language: '中英双语 Bilingual',
     train: '100%',
-    level1: '2',
-    level2:'22',
+    level1: '1,2',
+    level2: '22',
     level3: '221',
   },
   {
@@ -145,7 +147,7 @@ let data = [
     language: '中英双语 Bilingual',
     train: '100%',
     level1: '2',
-    level2:'22',
+    level2: '22',
     level3: '222',
   },
   {
@@ -161,7 +163,7 @@ let data = [
     language: '中英双语 Bilingual',
     train: '100%',
     level1: '2',
-    level2:'23',
+    level2: '23',
     level3: '',
   },
   {
@@ -177,7 +179,7 @@ let data = [
     language: '中英双语 Bilingual',
     train: '100%',
     level1: '2',
-    level2:'24',
+    level2: '24',
     level3: '',
   },
   {
@@ -193,7 +195,7 @@ let data = [
     language: '中英双语 Bilingual',
     train: '50%',
     level1: '2',
-    level2:'25',
+    level2: '25',
     level3: '',
   },
   {
@@ -212,42 +214,42 @@ let data = [
 ];
 
 //培训信息
-const traninData=[
+const traninData = [
   {
-    key:'1',
+    key: '1',
     trainName: '名称1',
-    trainUrl:'url',
-    content:[
+    trainUrl: 'url',
+    content: [
       {
-        key:'1',
-percent:'95%',
-finishDate:'2024-07-07',
-predictDate:'2024-08-09'
+        key: '1',
+        percent: '95%',
+        finishDate: '2024-07-07',
+        predictDate: '2024-08-09'
       },
       {
-        key:'2',
-        percent:'100%',
-        finishDate:'2024-07-08',
-        predictDate:'2024-08-10'
+        key: '2',
+        percent: '100%',
+        finishDate: '2024-07-08',
+        predictDate: '2024-08-10'
       },
     ]
   },
   {
-    key:'2',
+    key: '2',
     trainName: '名称2',
-    trainUrl:'2222',
-    content:[
+    trainUrl: '2222',
+    content: [
       {
-        key:'1',
-percent:'50%',
-finishDate:'2024-07-07',
-predictDate:'2024-08-09'
+        key: '1',
+        percent: '50%',
+        finishDate: '2024-07-07',
+        predictDate: '2024-08-09'
       },
       {
-        key:'2',
-        percent:'100%',
-        finishDate:'2024-07-08',
-        predictDate:'2024-08-10'
+        key: '2',
+        percent: '100%',
+        finishDate: '2024-07-08',
+        predictDate: '2024-08-10'
       },
     ]
   },
@@ -255,22 +257,20 @@ predictDate:'2024-08-09'
 
 // 列表查询
 app.get('/api/query/list', (req, res) => {
-  res.json(data); 
+  res.json(data);
 });
 
 // 基本信息-保存
 app.post('/api/basic-detail/save/:key', (req, res) => {
-  const { key } = req.params; // 获取 URL 中的 key 参数，用于标识要修改的数据项
-  const updatedData = req.body; // 从请求体中获取新数据
-
-  // 找到要修改的数据项在 data 数组中的索引
+  const { key } = req.params; 
+  const updatedData = req.body;
   const index = data.findIndex(item => item.key === key);
 
   if (index !== -1) {
     // 更新数据项
     data[index] = {
-      ...data[index], // 保留原始数据的其他字段
-      ...updatedData // 更新指定字段
+      ...data[index], 
+      ...updatedData 
     };
     res.status(200).json({ message: '保存成功！', updatedData: data[index] });
   } else {
@@ -280,23 +280,22 @@ app.post('/api/basic-detail/save/:key', (req, res) => {
 
 // 培训信息-查询
 app.get('/api/query/train-info/:key', (req, res) => {
-  const { key } = req.params; 
-  const data = traninData.find(i=>i.key===key)
-  res.json(data); 
+  const { key } = req.params;
+  const data = traninData.find(i => i.key === key)
+  res.json(data);
 });
 
 // 培训信息-保存
 app.post('/api/train-detail/save/:key', (req, res) => {
-  const { key } = req.params;  
-  const updatedData = req.body;  
-
+  const { key } = req.params;
+  const updatedData = req.body;
   const index = traninData.findIndex(item => item.key === key);
 
   if (index !== -1) {
     traninData[index] = {
-      ...traninData[index],  
-      ...updatedData ,
-      content: updatedData.content   
+      ...traninData[index],
+      ...updatedData,
+      content: updatedData.content
     };
     res.status(200).json({ message: '保存成功！', updatedData: data[index] });
   } else {

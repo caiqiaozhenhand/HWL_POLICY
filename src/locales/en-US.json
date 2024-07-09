@@ -1,5 +1,8 @@
 {
   "header.help": "Help",
+  "title.corporate.policy": "Leading Page – Corporate Policy",
+  "title.functional.policy": " Leading Page – Functional Policy/SOP",
+  "title.detailpage": "Details of SOP",
 
   "list.title.name": "Title",
   "list.title.description": "Description",
@@ -80,8 +83,10 @@
   "select.option.US": "HUTCHMED US Corporation",
   "select.option.BV": "HUTCHMED Europe B.V.",
 
-  "warn.please.select": "请勾选",
-  "warn.please.input": "请输入搜索关键词",
+  "warn.please.select": "Please select ",
+  "warn.please.input": " Please input keyword to search ",
+  "warn.required": "Please input",
+  "warn.validate.error": "Validate error, Please check the form input",
 
   "detail.title.basic": "General Information",
   "detail.title.train": "Training Information",
@@ -94,5 +99,8 @@
   "detail.title.class": "Training Program Title",
   "detail.title.percent": "Training Completion Status",
   "detail.title.finishDate": "Training Completion Status",
-  "detail.title.predictDate": "Expected Complete Date"
+  "detail.title.predictDate": "Expected Complete Date",
+  "detail.operation": "Operation",
+  "detail.operation.delete": "Delete",
+  "detail.operation.add": "Add"
 }
